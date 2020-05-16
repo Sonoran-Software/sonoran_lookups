@@ -15,4 +15,4 @@ local config = {
     autoLookupEnabled = true
 }
 
-Config.RegisterPluginConfig(config.pluginName, config)
+--Config.RegisterPluginConfig(config.pluginName, config)
