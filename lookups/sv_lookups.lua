@@ -132,12 +132,3 @@ RegisterCommand("namefind", function(source, args, rawCommand)
         end)
     end
 end, true)
-
-AddEventHandler("SonoranCAD::wraithv2:PlateLocked", function(source, reg, cam, plate, index)
-    if autoLookupEnabled then
-        local ids = GetPlayerIdentifiers(source)
-        if ids[Config.primaryIdentifier] then
-            cadPlateLookup(plate, true, function() end, ids[Config.primaryIdentifier])
-        end
-    end
-end)
