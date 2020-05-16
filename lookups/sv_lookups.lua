@@ -72,10 +72,14 @@ end
         plate: plate number
         basicFlag: true returns cached record if possible which only contains vehicleRegistrations object, false calls the API
         callback: the function called with the return data
+        autoLookup: when populated with an API ID, pops open a search window on the officer's CAD (optional)
 ]]
-function cadPlateLookup(plate, basicFlag, callback)
+function cadPlateLookup(plate, basicFlag, callback, autoLookup)
     local data = {}
     data["plate"] = plate:gsub("%s+","")
+    if autoLookup ~= nil then
+        data["apiId"] = autoLookup
+    end
     if PlateCache[data["plate"]] ~= nil and basicFlag then
         local currentTime = GetGameTimer()
         local expireTime = PlateCache[data["plate"]].lastFetched + (pluginConfig.maxCacheTime * 1000)
@@ -128,3 +132,12 @@ RegisterCommand("namefind", function(source, args, rawCommand)
         end)
     end
 end, true)
+
+AddEventHandler("SonoranCAD::wraithv2:PlateLocked", function(source, reg, cam, plate, index)
+    if autoLookupEnabled then
+        local ids = GetPlayerIdentifiers(source)
+        if ids[Config.primaryIdentifier] then
+            cadPlateLookup(plate, true, function() end, ids[Config.primaryIdentifier])
+        end
+    end
+end)

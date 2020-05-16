@@ -11,7 +11,8 @@ local config = {
 
     -- put your configuration options below
     maxCacheTime = 120, -- max time to cache a plate hit, in seconds
-    stalePurgeTimer = 600 -- delay between garbage collection, default 10 minutes
+    stalePurgeTimer = 600, -- delay between garbage collection, default 10 minutes
+    autoLookupEnabled = true
 }
 
 Config.RegisterPluginConfig(config.pluginName, config)
