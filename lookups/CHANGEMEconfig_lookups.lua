@@ -4,8 +4,8 @@
     Plugin Configuration
 ]]
 local config = {
+    enabled = false,
     pluginName = "lookups", -- name your plugin here
-    pluginVersion = "1.0", -- version of your plugin
     pluginAuthor = "SonoranCAD", -- author
     requiresPlugins = {}, -- required plugins for this plugin to work, separated by commas
 
@@ -15,4 +15,6 @@ local config = {
     autoLookupEnabled = true
 }
 
---Config.RegisterPluginConfig(config.pluginName, config)
+if config.enabled then
+    Config.RegisterPluginConfig(config.pluginName, config)
+end
