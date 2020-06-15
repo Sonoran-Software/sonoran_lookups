@@ -78,7 +78,7 @@ if pluginConfig.enabled then
     ]]
     function cadPlateLookup(plate, basicFlag, callback, autoLookup)
         local data = {}
-        data["plate"] = plate:gsub("%s+","")
+        data["plate"] = plate:match("^%s*(.-)%s*$")
         if autoLookup ~= nil then
             data["apiId"] = autoLookup
         end
