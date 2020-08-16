@@ -132,6 +132,64 @@ if pluginConfig.enabled then
             data["apiId"] = autoLookup
         end
         cadLookup(data, callback, autoLookup)
+        
+    end
+
+    function cadGetInformation(plate, callback, autoLookup)
+        local data = {}
+        data["plate"] = plate
+        if autoLookup ~= nil then
+            data["apiId"] = autoLookup
+        end
+        cadLookup(data, function(result)
+            local regData = {}
+            local charData = {}
+            local vehData = {}
+            local boloData = {}
+            for _, record in pairs(result.records) do
+                if record.type == 5 then
+                    for _, section in pairs(record.sections) do
+                        if section.category == 0 then
+                            local reg = {}
+                            for _, field in pairs(section.fields) do
+                                reg[field.label] = field.value
+                            end
+                            table.insert(regData, reg)
+                        elseif section.category == 3 then
+                            for _, field in pairs(section.fields) do
+                                if field["data"] ~= nil then
+                                    if field.data["first"] ~= nil then
+                                        table.insert(charData, field.data)
+                                    end
+                                end
+                            end
+                        elseif section.category == 4 then
+                            for _, field in pairs(section.fields) do
+                                
+                                if field["data"] ~= nil then
+                                    if field.data["plate"] ~= nil then
+                                        table.insert(vehData, field.data)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                elseif record.type == 3 then
+                    for _, section in pairs(record.sections) do
+                        if section.category == 1 then-- flags
+                            for _, field in pairs(section.fields) do
+                                if field["data"] ~= nil then
+                                    if field["data"]["flags"] ~= nil then
+                                        boloData = field["data"]["flags"]
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            callback(regData, vehData, charData, boloData)
+        end, autoLookup)
     end
 
     exports('cadNameLookup', cadNameLookup)
