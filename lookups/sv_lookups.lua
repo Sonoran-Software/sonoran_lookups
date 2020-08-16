@@ -178,9 +178,11 @@ if pluginConfig.enabled then
                     for _, section in pairs(record.sections) do
                         if section.category == 1 then-- flags
                             for _, field in pairs(section.fields) do
-                                if field["data"] ~= nil then
+                                if field["data"] ~= nil then -- is a BOLO, might not have flags
                                     if field["data"]["flags"] ~= nil then
                                         boloData = field["data"]["flags"]
+                                    else
+                                        boloData = {"BOLO"}
                                     end
                                 end
                             end
