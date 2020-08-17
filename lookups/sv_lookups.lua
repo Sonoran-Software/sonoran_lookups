@@ -146,43 +146,45 @@ if pluginConfig.enabled then
             local charData = {}
             local vehData = {}
             local boloData = {}
-            for _, record in pairs(result.records) do
-                if record.type == 5 then
-                    for _, section in pairs(record.sections) do
-                        if section.category == 0 then
-                            local reg = {}
-                            for _, field in pairs(section.fields) do
-                                reg[field.label] = field.value
-                            end
-                            table.insert(regData, reg)
-                        elseif section.category == 3 then
-                            for _, field in pairs(section.fields) do
-                                if field["data"] ~= nil then
-                                    if field.data["first"] ~= nil then
-                                        table.insert(charData, field.data)
+            if result ~= nil and result.records ~= nil then
+                for _, record in pairs(result.records) do
+                    if record.type == 5 then
+                        for _, section in pairs(record.sections) do
+                            if section.category == 0 then
+                                local reg = {}
+                                for _, field in pairs(section.fields) do
+                                    reg[field.label] = field.value
+                                end
+                                table.insert(regData, reg)
+                            elseif section.category == 3 then
+                                for _, field in pairs(section.fields) do
+                                    if field["data"] ~= nil then
+                                        if field.data["first"] ~= nil then
+                                            table.insert(charData, field.data)
+                                        end
                                     end
                                 end
-                            end
-                        elseif section.category == 4 then
-                            for _, field in pairs(section.fields) do
-                                
-                                if field["data"] ~= nil then
-                                    if field.data["plate"] ~= nil then
-                                        table.insert(vehData, field.data)
+                            elseif section.category == 4 then
+                                for _, field in pairs(section.fields) do
+                                    
+                                    if field["data"] ~= nil then
+                                        if field.data["plate"] ~= nil then
+                                            table.insert(vehData, field.data)
+                                        end
                                     end
                                 end
                             end
                         end
-                    end
-                elseif record.type == 3 then
-                    for _, section in pairs(record.sections) do
-                        if section.category == 1 then-- flags
-                            for _, field in pairs(section.fields) do
-                                if field["data"] ~= nil then -- is a BOLO, might not have flags
-                                    if field["data"]["flags"] ~= nil then
-                                        boloData = field["data"]["flags"]
-                                    else
-                                        boloData = {"BOLO"}
+                    elseif record.type == 3 then
+                        for _, section in pairs(record.sections) do
+                            if section.category == 1 then-- flags
+                                for _, field in pairs(section.fields) do
+                                    if field["data"] ~= nil then -- is a BOLO, might not have flags
+                                        if field["data"]["flags"] ~= nil then
+                                            boloData = field["data"]["flags"]
+                                        else
+                                            boloData = {"BOLO"}
+                                        end
                                     end
                                 end
                             end
