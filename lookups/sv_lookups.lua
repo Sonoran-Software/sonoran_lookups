@@ -80,13 +80,13 @@ if pluginConfig.enabled then
         data["types"] = data["types"] == nil and {2,3,4,5} or data["types"]
         if autoLookup ~= nil then
             data["apiId"] = autoLookup
-        end
-        -- check cache
-        for k, v in pairs(LookupCache) do
-            if v:IsMatch(data.first, data.last, data.mi, data.plate, data.types) then
-                debugLog("Returning cached response")
-                callback(json.decode(v.response))
-                return
+        else
+            for k, v in pairs(LookupCache) do
+                if v:IsMatch(data.first, data.last, data.mi, data.plate, data.types) then
+                    debugLog("Returning cached response")
+                    callback(json.decode(v.response))
+                    return
+                end
             end
         end
         performApiRequest({data}, "LOOKUP", function(result)
