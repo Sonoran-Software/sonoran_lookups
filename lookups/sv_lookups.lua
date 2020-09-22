@@ -78,6 +78,13 @@ if pluginConfig.enabled then
         data["last"] = data["last"] == nil and "" or data["last"]
         data["plate"] = data["plate"] == nil and "" or data["plate"]:match("^%s*(.-)%s*$")
         data["types"] = data["types"] == nil and {2,3,4,5} or data["types"]
+
+        if data.first == "" and data.last == "" and data.mi == "" and data.plate == "" then
+            --not a valid request, just return a blank lookup
+            debugLog("Invalid lookup, all blanks? Trace: "..debug.traceback())
+            callback({})
+            return
+        end
         if autoLookup ~= nil then
             data["apiId"] = autoLookup
         else
