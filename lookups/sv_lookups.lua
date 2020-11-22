@@ -153,45 +153,43 @@ if pluginConfig.enabled then
             local charData = {}
             local vehData = {}
             local boloData = {}
-            if result ~= nil and result.records ~= nil then
-                for _, record in pairs(result.records) do
-                    if record.type == 5 then
-                        for _, section in pairs(record.sections) do
-                            if section.category == 0 then
+            if result ~= nil then
+                for k, v in pairs(result) do
+                    for _, record in pairs(v.sections) do
+                        if v.type == 5 then
+                            debugLog("Record type 5")
+                            debugLog("reg info")
+                            if record.label == "Registration Information" then
                                 local reg = {}
-                                for _, field in pairs(section.fields) do
+                                for _, field in pairs(record.fields) do
                                     reg[field.label] = field.value
                                 end
                                 table.insert(regData, reg)
-                            elseif section.category == 3 then
-                                for _, field in pairs(section.fields) do
-                                    if field["data"] ~= nil then
-                                        if field.data["first"] ~= nil then
-                                            table.insert(charData, field.data)
-                                        end
+                            elseif record.label == "Civilian Information" then
+                                local char = {}
+                                for _, field in pairs(record.fields) do
+                                    if field["uid"] ~= nil then
+                                        char[field.uid] = field.value
                                     end
                                 end
-                            elseif section.category == 4 then
-                                for _, field in pairs(section.fields) do
-                                    
-                                    if field["data"] ~= nil then
-                                        if field.data["plate"] ~= nil then
-                                            table.insert(vehData, field.data)
-                                        end
+                                table.insert(charData, char)
+                            elseif record.label == "Vehicle Information" then
+                                local veh = {}
+                                for _, field in pairs(record.fields) do
+                                    if field["uid"] ~= nil then
+                                        veh[field.uid] = field.value
                                     end
                                 end
+                                table.insert(vehData, veh)
                             end
-                        end
-                    elseif record.type == 3 then
-                        for _, section in pairs(record.sections) do
-                            if section.category == 1 then-- flags
-                                for _, field in pairs(section.fields) do
-                                    if field["data"] ~= nil then -- is a BOLO, might not have flags
-                                        if field["data"]["flags"] ~= nil then
-                                            boloData = field["data"]["flags"]
-                                        else
-                                            boloData = {"BOLO"}
-                                        end
+                        elseif v.type == 3 then
+                            for _, section in pairs(v.sections) do
+                                if section.category == 1 and section.label == "Flags" then-- flags
+                                    if section.fields.data ~= nil and section.fields.data.flags ~= nil then
+                                        boloData = section.fields.data.flags
+                                    else
+                                        debugLog("Insert generic flag to trigger")
+                                        boloData = {"BOLO"}
                                     end
                                 end
                             end
