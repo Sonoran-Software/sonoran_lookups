@@ -162,7 +162,7 @@ if pluginConfig.enabled then
                             if record.label == "Registration Information" then
                                 local reg = {}
                                 for _, field in pairs(record.fields) do
-                                    reg[field.label] = field.value
+                                    reg[field.uid] = field.value
                                 end
                                 table.insert(regData, reg)
                             elseif record.label == "Civilian Information" then
@@ -208,8 +208,16 @@ if pluginConfig.enabled then
 
     RegisterCommand("platefind", function(source, args, rawCommand)
         if args[1] ~= nil then
-            cadPlateLookup(args[1], true, function(data)
-                print(("Raw data: %s"):format(json.encode(data)))
+            cadGetInformation(args[1], function(regData, vehData, charData, boloData)
+                for _, veh in pairs(vehData) do
+                    if veh.plate:lower() == args[1]:lower() then
+                        reg = veh
+                        print("Got registration data "..veh.plate)
+                        print(json.encode(veh))
+                        print(json.encode(regData))
+                        break
+                    end
+                end
             end)
         end
     end, true)
