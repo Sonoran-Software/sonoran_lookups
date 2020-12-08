@@ -158,29 +158,51 @@ if pluginConfig.enabled then
                     for _, record in pairs(v.sections) do
                         if v.type == 5 then
                             debugLog("Record type 5")
-                            debugLog("reg info")
-                            if record.label == "Registration Information" then
-                                local reg = {}
-                                for _, field in pairs(record.fields) do
-                                    reg[field.uid] = field.value
-                                end
-                                table.insert(regData, reg)
-                            elseif record.label == "Civilian Information" then
-                                local char = {}
-                                for _, field in pairs(record.fields) do
-                                    if field["uid"] ~= nil then
-                                        char[field.uid] = field.value
+                            -- detect fields to find registration info
+                            for k, field in pairs(record.fields) do
+                                if field.uid == "status" and field.type == "select" then
+                                    debugLog("Found registration data")
+                                    local reg = {}
+                                    for k, field in pairs(record.fields) do
+                                        if field["uid"] ~= nil then
+                                            if string.match(field.uid, "_") then
+                                                reg[field.label:lower()] = field.value
+                                                debugLog(("set %s = %s"):format(field.label:lower(), field.value))
+                                            else
+                                                reg[field.uid] = field.value
+                                                debugLog(("set %s = %s"):format(field.uid, field.value))
+                                            end
+                                        end
                                     end
-                                end
-                                table.insert(charData, char)
-                            elseif record.label == "Vehicle Information" then
-                                local veh = {}
-                                for _, field in pairs(record.fields) do
-                                    if field["uid"] ~= nil then
-                                        veh[field.uid] = field.value
+                                    table.insert(regData, reg)
+                                elseif field.uid == "first" then
+                                    debugLog("found civilian info")
+                                    local char = {}
+                                    for _, field in pairs(record.fields) do
+                                        if field["uid"] ~= nil then
+                                            if string.match(field.uid, "_") then
+                                                char[field.label:lower()] = field.value
+                                            else
+                                                char[field.uid] = field.value
+                                            end
+                                        end
                                     end
+                                    table.insert(charData, char)
+
+                                elseif field.uid == "plate" then
+                                    debugLog("found vehicle info")
+                                    local veh = {}
+                                    for _, field in pairs(record.fields) do
+                                        if field["uid"] ~= nil then
+                                            if string.match(field.uid, "_") then
+                                                veh[field.label:lower()] = field.value
+                                            else
+                                                veh[field.uid] = field.value
+                                            end
+                                        end
+                                    end
+                                    table.insert(vehData, veh)
                                 end
-                                table.insert(vehData, veh)
                             end
                         elseif v.type == 3 then
                             for _, section in pairs(v.sections) do
@@ -188,7 +210,6 @@ if pluginConfig.enabled then
                                     if section.fields.data ~= nil and section.fields.data.flags ~= nil then
                                         boloData = section.fields.data.flags
                                     else
-                                        debugLog("Insert generic flag to trigger")
                                         boloData = {"BOLO"}
                                     end
                                 end
