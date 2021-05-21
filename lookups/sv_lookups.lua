@@ -205,7 +205,18 @@ if pluginConfig.enabled then
                                 end
                             end
                         elseif v.type == 3 then
+                            local boloActive = true
                             for _, section in pairs(v.sections) do
+                                for _, field in pairs(section.fields) do
+                                    if field.uid == "status" then
+                                        debugLog(("Found BOLO status field %s with value %s"):format(field.label, field.value))
+                                        if field.value == "0" then
+                                            boloActive = true
+                                        elseif field.value == "1" then
+                                            boloActive = false
+                                        end
+                                    end
+                                end
                                 if section.category == 1 and section.label == "Flags" then-- flags
                                     if section.fields.data ~= nil and section.fields.data.flags ~= nil then
                                         boloData = section.fields.data.flags
@@ -213,6 +224,10 @@ if pluginConfig.enabled then
                                         boloData = {"BOLO"}
                                     end
                                 end
+                            end
+                            if not boloActive then
+                                debugLog("BOLO inactive, mark as such")
+                                boloData = {}
                             end
                         end
                     end
