@@ -148,6 +148,7 @@ if pluginConfig.enabled then
         if autoLookup ~= nil then
             data["apiId"] = autoLookup
         end
+        local boloStatusUid = pluginConfig.boloStatusUid ~= nil and pluginConfig.boloStatusUid or "status"
         cadLookup(data, function(result)
             local regData = {}
             local charData = {}
@@ -208,7 +209,7 @@ if pluginConfig.enabled then
                             local boloActive = true
                             for _, section in pairs(v.sections) do
                                 for _, field in pairs(section.fields) do
-                                    if field.uid == "status" then
+                                    if field.uid == boloStatusUid then
                                         debugLog(("Found BOLO status field %s with value %s"):format(field.label, field.value))
                                         if field.value == "0" then
                                             boloActive = true
@@ -217,7 +218,7 @@ if pluginConfig.enabled then
                                         end
                                     end
                                 end
-                                if section.category == 1 and section.label == "Flags" then-- flags
+                                if section.category == 1
                                     if section.fields.data ~= nil and section.fields.data.flags ~= nil then
                                         boloData = section.fields.data.flags
                                     else
