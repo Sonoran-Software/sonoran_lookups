@@ -1,5 +1,5 @@
 {
-    "version": "1.5.1",
+    "version": "1.5.2",
     "check_url": "https://raw.githubusercontent.com/Sonoran-Software/sonoran_lookups/master/lookups/version_lookups.json",
     "download_url": "https://github.com/Sonoran-Software/sonoran_lookups/"
 }
