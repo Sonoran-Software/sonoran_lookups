@@ -218,7 +218,7 @@ if pluginConfig.enabled then
                                         end
                                     end
                                 end
-                                if section.category == 1
+                                if section.category == 1 then
                                     if section.fields.data ~= nil and section.fields.data.flags ~= nil then
                                         boloData = section.fields.data.flags
                                     else
