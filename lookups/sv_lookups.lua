@@ -103,7 +103,7 @@ if pluginConfig.enabled then
             table.insert(LookupCache, l)
             callback(lookup)
         end)
-            
+
     end
 
     function cadLookupInt(searchType, value, types, callback, autoLookup)
@@ -139,7 +139,7 @@ if pluginConfig.enabled then
             data["apiId"] = autoLookup
         end
         cadLookup(data, callback, autoLookup)
-        
+
     end
 
     function cadGetInformation(plate, callback, autoLookup)
@@ -217,12 +217,14 @@ if pluginConfig.enabled then
                                         end
                                     end
                                 end
-                                if section.category == 1 and section.label == "Flags" then-- flags
+                                if section.category == 1 then-- flags
                                     if section.fields.data ~= nil and section.fields.data.flags ~= nil then
                                         boloData = section.fields.data.flags
                                     else
                                         boloData = {"BOLO"}
                                     end
+                                else
+                                    boloData = {"BOLO"}
                                 end
                             end
                             if not boloActive then
